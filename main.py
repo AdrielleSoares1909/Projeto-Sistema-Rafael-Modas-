@@ -203,7 +203,15 @@ def valor_total_estoque():
 
     print(f"Valor total do estoque: R$ {total_estoque:.2f}")
 
+def salvar_arquivo():
 
+    arquivo = open("estoque.txt","w")
+
+    for roupa in roupas:
+
+        arquivo.write(f'{roupa ["nome"]};{roupa ["preco"]};{roupa["estoque"]};{roupa ["tamanho"]}\n')
+
+    arquivo.close()
 
 while opcao != "9":
 
