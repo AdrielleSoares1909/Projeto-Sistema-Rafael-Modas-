@@ -56,7 +56,7 @@ def cadastrar_roupas():
 
     nome = input("Digite o nome da peça de roupa a ser cadastrada: ")
     preco = float(input("Digite o preço da peca de roupa a ser cadastrada: "))
-    estoque = int(input("Digite a quantidade em estoque disponivel : "))
+    estoque = float(input("Digite a quantidade em estoque disponivel : "))
     tamanho = input("Digite o tamanho da peca de roupa a ser cadastrada: ")
 
     roupa = {
@@ -205,13 +205,34 @@ def valor_total_estoque():
 
 def salvar_arquivo():
 
-    arquivo = open("estoque.txt","w")
+    arquivo = open("estoque.txt","w") # w escreve na lista
 
     for roupa in roupas:
 
         arquivo.write(f'{roupa ["nome"]};{roupa ["preco"]};{roupa["estoque"]};{roupa ["tamanho"]}\n')
 
     arquivo.close()
+
+def carregar_arquivo():
+
+    arquivo = open("estoque.txt","r") # Abrir arquivo
+
+    for linha in arquivo: # percorre a lista 
+
+        dados = linha.split(";") # split =  transformar a linha do arquivo em uma lista e seprar por ;
+
+        roupa = { # Cria o dicionário
+
+            "nome": dados[0],
+            "preco": float(dados[1]),# converter tipo para float como se trata do preco
+            "estoque": int(dados[2]), # converter para int pois se trata de uma numero inteiro
+            "tamanho": dados[3]
+        }
+
+    
+        roupas.append(roupa) # adiciona na lista
+
+    arquivo.close() # fecha o arquivo
 
 while opcao != "9":
 
