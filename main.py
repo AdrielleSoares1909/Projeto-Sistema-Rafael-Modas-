@@ -50,6 +50,8 @@
 
 roupas = []
 
+vendas = []
+
 opcao = "0"
 
 def cadastrar_roupas():
@@ -168,7 +170,9 @@ def registrar_venda():
 
     venda_tamanho = input("Qual tamanho do item  do estoque foi vendido: ")
 
-    quantidade_vendida = int(input("Qual quantidade  do item  do estoque foi vendido: "))
+    quantidade_vendida = float(input("Qual quantidade  do item  do estoque foi vendido: "))
+
+    
 
     roupa_encontrada = False
 
@@ -180,7 +184,14 @@ def registrar_venda():
 
                 if roupa["estoque"] >= quantidade_vendida:
 
+                    nome_do_cliente = input("Qual o nome do cliente: ")
+
+                    data_da_venda = input("Qual a data da venda: ")
+
                     roupa["estoque"] = roupa["estoque"] - quantidade_vendida
+
+                    
+                    historico_vendas(roupa,nome_do_cliente,data_da_venda,quantidade_vendida)
 
                     print("Compra realizada com sucesso.")
 
@@ -234,7 +245,55 @@ def carregar_arquivo():
 
     arquivo.close() # fecha o arquivo
 
-while opcao != "9":
+
+def historico_vendas(roupa,nome_do_cliente,data_da_venda,quantidade_vendida):
+
+    
+        
+    venda = {
+
+        "nome": roupa["nome"],
+
+        "tamanho": roupa["tamanho"],
+
+        "quantidade_vendida" : quantidade_vendida, # Se a informação já está em uma variável, use a variável.
+
+        "preco" : roupa["preco"],
+
+        "valor_total" : roupa["preco"] * quantidade_vendida, # Se a informação já está em uma variável, use a variável.
+
+        "nome_do_cliente" : nome_do_cliente,
+
+        "data_da_venda" : data_da_venda,
+
+    }
+
+    vendas.append(venda)
+
+
+def listar_historico_vendas():
+
+    for venda in vendas:
+
+
+        print(f"----------------------")
+        print(f"PRODUTO: {venda['nome']}")
+        print(f"TAMANHO: {venda['tamanho']}")
+        print(f"QUANTIDADE VENDIDA: {venda['quantidade_vendida']}")
+        print(f"PREÇO DA UNIDADE: R${venda['preco']}")
+        print(f"PREÇO TOTAL DA VENDA: R${venda['valor_total']}")
+        print(f"CLIENTE: {venda['nome_do_cliente']}")
+        print(f"DATA DA VENDA: {venda['data_da_venda']}")
+        print(f"----------------------")
+
+
+    if not vendas:
+        print("Nenhuma venda registrada.")
+    return
+
+
+
+while opcao != "10":
 
     print("------- MENU --------")
     print("1 = CADASTRAR ROUPA ")
@@ -244,7 +303,8 @@ while opcao != "9":
     print("5 = ALTERAR PRECO ")
     print("6 = REGISTRAR VENDA ")
     print("7 = VALOR TOTAL DO ESTOQUE")
-    print("8 = SAIR ")
+    print("8 = LISTAR HISTORICO DE VENDAS ")
+    print("9 = SAIR ")
 
     opcao = input("Digite a opcao desejada: ")
 
@@ -276,7 +336,13 @@ while opcao != "9":
 
         valor_total_estoque()
 
+    elif opcao == "8":
+
+        listar_historico_vendas()
+
     else:
 
         print("Sair do Sistema!")
-    
+
+
+
