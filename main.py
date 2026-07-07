@@ -292,6 +292,40 @@ def listar_historico_vendas():
     return
 
 
+def salvar_historico():
+
+    historico = open("historico_vendas.txt","w") # w escreve na lista
+
+    for venda in vendas:
+
+        historico.write(f'{venda ["nome"]};{venda ["tamanho"]};{venda["quantidade_vendida"]};{venda ["preco"]};{venda["valor_total"]};{venda ["nome_do_cliente"]};{venda ["data_da_venda"]}\n')
+
+    historico.close()
+
+
+def carregar_historico():
+
+    historico = open("historico_vendas.txt","r") # Abrir arquivo
+
+    for linha in historico: # percorre a lista 
+
+        dados = linha.split(";") # split =  transformar a linha do arquivo em uma lista e seprar por ;
+
+        venda = { # Cria o dicionário
+
+            "nome": dados[0],
+            "tamanho": dados[1],
+            "quantidade_vendida" : int(dados[2]),
+            "preco": float(dados[3]),# converter tipo para float como se trata do preco
+            "valor_total": float(dados[4]), # converter para int pois se trata de uma numero inteiro
+            "nome_do_cliente": dados[5],
+            "data_da_venda" : dados[6].split() # O strip() remove o \n do final da linha.
+        }
+
+        vendas.append(venda)
+
+    historico.close() # fecha o arquivo
+
 
 while opcao != "10":
 
