@@ -81,7 +81,15 @@ Durante o desenvolvimento pratiquei diversos conceitos importantes de Python, co
 * utilização de return e break
 * CRUD em memória
 * organização de projetos.
+* rafatoração do projeto ✅ Módulos ✅ Imports ✅ Passagem de parâmetros ✅ Eliminar variáveis globais
+* ✅ Separação de responsabilidades > 
+  - Cada arquivo tem uma função clara:
 
+      main.py → coordena o programa.
+      estoque.py → cuida das roupas.
+      vendas.py → cuida das vendas.
+      arquivos.py → salva e carrega dados.
+      
 --------
 
 💡 Motivação 
