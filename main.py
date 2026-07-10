@@ -47,6 +47,20 @@
     
 """
 
+from estoque import cadastrar_roupas
+from  estoque import listar_roupas
+from estoque import buscar_roupa
+from estoque import encontrar_roupa
+from estoque import remover_roupa
+from estoque import alterar_preco
+from estoque import valor_total_estoque
+from vendas import registrar_venda
+from vendas import historico_vendas
+from vendas import listar_historico_vendas
+from arquivos import salvar_arquivo
+from arquivos import carregar_arquivo
+from arquivos import salvar_historico
+from arquivos import carregar_historico
 
 roupas = []
 
@@ -54,343 +68,9 @@ vendas = []
 
 opcao = "0"
 
-def cadastrar_roupas():
+carregar_arquivo(roupas)
+carregar_historico(vendas)
 
-    nome = input("Digite o nome da peça de roupa a ser cadastrada: ")
-    preco = float(input("Digite o preço da peca de roupa a ser cadastrada: "))
-    estoque = int(input("Digite a quantidade em estoque disponivel : "))
-    tamanho = input("Digite o tamanho da peca de roupa a ser cadastrada: ")
-
-    roupa = {
-
-        "nome": nome,
-        "preco" : preco,
-        "estoque" : estoque,
-        "tamanho": tamanho
-    }
-
-    roupas.append(roupa) #Alterar a lista
-
-    
-
-    salvar_arquivo()
-   
-
-
-
-def listar_roupas():
-
-    if not roupas:
-
-        print("LISTA VAZIA")
-        return # usando para sair da função
-
-    for roupa in roupas:
-        print("-------------------")
-        print(f"Nome: {roupa['nome']}")
-        print(f"Preço: R${roupa['preco']}")
-        print(f"Estoque: {roupa['estoque']}")
-        print(f"Tamanho: {roupa['tamanho']}")
-        print("-------------------")
-
-
-    
-    
-
-
-def buscar_roupa():
-
-    localizar_roupa = input("Qual roupa deseja localizar:  ")
-
-    localizar_tamanho = input("Digite o tamanho da roupa a ser localizada: ")
-
-    encontrei_roupa = False
-
-    for roupa in roupas:
-
-        if roupa["nome"]  == localizar_roupa and roupa["tamanho"] == localizar_tamanho.strip().lower():
-
-            encontrei_roupa = True
-
-            print(f"Nome: {roupa['nome']}")
-            print(f"Preço: R${roupa['preco']}")
-            print(f"Estoque: {roupa['estoque']}")
-            print(f"Tamanho: {roupa['tamanho']}")
-
-    if not encontrei_roupa:
-        print("ROUPA NÃO LOCALIZADA NO SISTEMA!")
-
-
-def remover_roupa():
-
-    excluir_roupa = input("Qual roupa deseja excluir do sistema: ")
-
-    excluir_tamanho = input("Qual tamanho  deseja excluir do sistema: ")
-
-    roupa_encontrada = False
-
-    for roupa in roupas:
-
-        if roupa["nome"] == excluir_roupa and roupa["tamanho"] == excluir_tamanho.strip().lower():
-
-            roupa_encontrada = True
-
-            roupas.remove(roupa) #Alterar a lista
-
-            print("ROUPA EXCLUIDA DO SISTEMA COM SUCESSO.")
-
-            salvar_arquivo()
-
-            return
-    
-    if not roupa_encontrada:
-        print("ROUPA NÃO ENCONTRADA!")
-
-
-    
-    
-
-def alterar_preco():
-
-    alterar_roupa = input("Qual roupa deseja alterar no sistema: ")
-
-    alterar_tamanho = input("Qual tamanho  deseja alterar no sistema: ")
-
-    novo_preco = float(input("Qual sera o novo preco a ser cadastrado no sistema: "))
-
-    roupa_encontrada = False
-
-    for roupa in roupas:
-
-        if roupa["nome"] == alterar_roupa and roupa["tamanho"] == alterar_tamanho.strip().lower():
-
-                roupa_encontrada = True
-
-                roupa["preco"] = novo_preco #Alterar um item da lista
-
-                print("PRECO ATUALIZADO NO  SISTEMA COM SUCESSO.")
-
-                salvar_arquivo()
-
-                return
-    
-    if not roupa_encontrada:
-        print("ROUPA NÃO ENCONTRADA!")
-    
-
-    
-    
-
-def registrar_venda():
-
-    venda_roupa = input("Qual item do estoque foi vendido: ")
-
-    venda_tamanho = input("Qual tamanho do item  do estoque foi vendido: ")
-
-    quantidade_vendida = int(input("Qual quantidade  do item  do estoque foi vendido: "))
-
-    
-
-    roupa_encontrada = False
-
-    for roupa in roupas:
-
-        
-
-        if roupa["nome"] == venda_roupa and roupa["tamanho"] == venda_tamanho.strip().lower():
-
-                roupa_encontrada = True
-
-                if roupa["estoque"] >= quantidade_vendida:
-
-                    nome_do_cliente = input("Qual o nome do cliente: ")
-
-                    data_da_venda = input("Qual a data da venda: ")
-
-                    roupa["estoque"] = roupa["estoque"] - quantidade_vendida
-
-                    
-                    historico_vendas(roupa,nome_do_cliente,data_da_venda,quantidade_vendida)
-
-                    print("Compra realizada com sucesso.")
-
-                else:
-
-                    print("QUANTIDADE INDISPONIVEL!!!")
-                
-                salvar_arquivo()
-                salvar_historico()
-
-                return
-        
-    if not roupa_encontrada:
-        print("ROUPA NÃO ENCONTRADA!")
-
-    
-
-                
-def valor_total_estoque():
-
-    total_estoque = 0
-
-    for roupa in roupas:
-
-        total_estoque += roupa["estoque"] * roupa["preco"] 
-
-    print(f"Valor total do estoque: R$ {total_estoque:.2f}")
-
-
-
-
-def salvar_arquivo():
-
-    
-    arquivo = open("estoque.txt","w") # w escreve na lista
-
-    for roupa in roupas:
-
-        arquivo.write(f'{roupa ["nome"]};{roupa ["preco"]};{roupa["estoque"]};{roupa ["tamanho"]}\n')
-
-    arquivo.close()
-
-def carregar_arquivo():
-
-    arquivo = open("estoque.txt", "r")
-
-    for linha in arquivo:
-
-        if linha.strip() == "":
-            continue
-
-        dados = linha.split(";")
-
-        roupa = {
-            "nome": dados[0],
-            "preco": float(dados[1]),
-            "estoque": int(float(dados[2])),
-            "tamanho": dados[3].strip()
-        }
-
-        roupas.append(roupa)
-
-    arquivo.close()
-
-
-def historico_vendas(roupa,nome_do_cliente,data_da_venda,quantidade_vendida):
-
-    
-        
-    venda = {
-
-        "nome": roupa["nome"],
-
-        "tamanho": roupa["tamanho"],
-
-        "quantidade_vendida" : quantidade_vendida, # Se a informação já está em uma variável, use a variável.
-
-        "preco" : roupa["preco"],
-
-        "valor_total" : roupa["preco"] * quantidade_vendida, # Se a informação já está em uma variável, use a variável.
-
-        "nome_do_cliente" : nome_do_cliente,
-
-        "data_da_venda" : data_da_venda,
-
-    }
-
-    vendas.append(venda)
-
-
-def listar_historico_vendas():
-
-    for venda in vendas:
-
-
-        print(f"----------------------")
-        print(f"PRODUTO: {venda['nome']}")
-        print(f"TAMANHO: {venda['tamanho']}")
-        print(f"QUANTIDADE VENDIDA: {venda['quantidade_vendida']}")
-        print(f"PREÇO DA UNIDADE: R${venda['preco']}")
-        print(f"PREÇO TOTAL DA VENDA: R${venda['valor_total']}")
-        print(f"CLIENTE: {venda['nome_do_cliente']}")
-        print(f"DATA DA VENDA: {venda['data_da_venda']}")
-        print(f"----------------------")
-
-
-    if not vendas:
-        print("Nenhuma venda registrada.")
-    return
-
-
-def salvar_historico():
-
-    historico = open("historico_vendas.txt","w") # w escreve na lista
-
-    for venda in vendas:
-
-        historico.write(f'{venda ["nome"]};{venda ["tamanho"]};{venda["quantidade_vendida"]};{venda ["preco"]};{venda["valor_total"]};{venda ["nome_do_cliente"]};{venda ["data_da_venda"]}\n')
-
-    historico.close()
-
-
-def carregar_historico():
-
-    historico = open("historico_vendas.txt","r") # Abrir arquivo
-
-    for linha in historico: # percorre a lista 
-
-        if linha.strip() == "":
-            continue
-
-        dados = linha.split(";") # split =  transformar a linha do arquivo em uma lista e seprar por ;
-
-        venda = { # Cria o dicionário
-
-            "nome": dados[0],
-            "tamanho": dados[1],
-            "quantidade_vendida" : dados[2],
-            "preco": float(dados[3]),# converter tipo para float como se trata do preco
-            "valor_total": float(dados[4]), # converter para int pois se trata de uma numero inteiro
-            "nome_do_cliente": dados[5],
-            "data_da_venda" : dados[6].strip() # O strip() remove o \n do final da linha.
-        }
-
-        vendas.append(venda)
-
-    historico.close() # fecha o arquivo
-
-
-def encontrar_roupa():
-
-
-
-    buscar_roupa = input("Digite o nome da roupa: ").strip().lower()
-
-    roupa_encontrada = False
-
-    for roupa in roupas:
-
-        
-        if roupa["nome"].strip().lower() == buscar_roupa:
-
-            roupa_encontrada = True
-
-            print("---------------------")
-            print(f"Nome: {roupa['nome']}")
-            print(f"Preço: R${roupa['preco']}")
-            print(f"Estoque: {roupa['estoque']}")
-            print(f"Tamanho: {roupa['tamanho']}")
-            print("---------------------")
-
-            
-            
-    if not roupa_encontrada:
-        print("ROUPA NÃO ENCONTRADA!")
-
-
-
-carregar_arquivo()
-carregar_historico()
 
 while opcao != "10":
 
@@ -410,39 +90,49 @@ while opcao != "10":
 
     if opcao == "1":
 
-        cadastrar_roupas()
+        cadastrar_roupas(roupas)
+        salvar_arquivo(roupas)
 
     elif opcao == "2":
 
-        listar_roupas()
+        listar_roupas(roupas)
+     
     
     elif opcao == "3":
 
-        buscar_roupa()
+        buscar_roupa(roupas)
+        
 
     elif opcao == "4":
 
-        remover_roupa()
+        remover_roupa(roupas)
+        salvar_arquivo(roupas)
 
     elif opcao == "5":
 
-        alterar_preco()
+        alterar_preco(roupas)
+        salvar_arquivo(roupas)
 
     elif opcao == "6":
 
-        registrar_venda()
+        registrar_venda(roupas, vendas)
+        salvar_arquivo(roupas)
+        salvar_historico(vendas)
+
 
     elif opcao == "7":
 
-        valor_total_estoque()
+        valor_total_estoque(roupas)
 
     elif opcao == "8":
 
-        listar_historico_vendas()
+        listar_historico_vendas(vendas)
+        
+        
 
     elif opcao == "9":
 
-        encontrar_roupa()
+        encontrar_roupa(roupas)
 
     elif opcao == "10":
 
